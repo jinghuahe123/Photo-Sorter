@@ -1,8 +1,8 @@
 # Photo-Sorter
 Quickly sorts photos into folders based on their date taken.
 
-Main.java is given as source code, Photo Sorter.jar is pre-compiled version. 
+To run simply enter the directory where all your photos are kept as an argument after the program file name like so:
 
-To run simply enter the directory where all your photos are kept and the program will automatically sort them into folders based on time. 
+java -jar Photo-Sorter_V2.jar "C:\\test"
 
 Enjoy!
