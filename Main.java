@@ -1,54 +1,76 @@
-import java.io.*;
-import java.nio.file.*;
-import java.nio.file.attribute.*;
+import java.io.File;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.nio.file.StandardCopyOption;
+import java.nio.file.attribute.BasicFileAttributes;
+import java.nio.file.attribute.FileTime;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.Objects;
 import java.util.Scanner;
 
 public class Main {
     public static void main(String[] args) {
 
+        if (args.length != 1 ) {
+            System.out.println("Please enter only one path.");
+            System.exit(0);
+        }
+
+        String path = args[0];
+
         Scanner scanner = new Scanner(System.in);
 
-        System.out.print("Source: ");
-        String directorypath = scanner.nextLine();
-        System.out.println();
+        System.out.println("You have selected path: " + path);
+        System.out.print("Type 'n' to exit, else type anything to continue: ");
+        String input = scanner.nextLine();
 
-        Path directory = Paths.get(directorypath);
+        if (Objects.equals(input, "n")) {
+            System.out.println("You have chose to exit. Process will now quit.");
+            System.exit(0);
+        }
+
+        //System.out.print("Source: ");
+        //String directoryPath = scanner.nextLine();
+        //System.out.println();
+
+        Path directory = Paths.get(path);
 
         try {
             Files.walk(directory)
                     .filter(Files::isRegularFile)
-                    .forEach(filepath -> sort(filepath.toString(), directorypath));
+                    .forEach(filePath -> sort(filePath.toString(), path));
         } catch (IOException e) {
             e.printStackTrace();
         }
     }
 
-    static void sort(String path, String directorypath) {
+    static void sort(String filePath, String directoryPath) {
 
         try {
-            BasicFileAttributes attr = Files.readAttributes(Path.of(path), BasicFileAttributes.class);
+            BasicFileAttributes attr = Files.readAttributes(Path.of(filePath), BasicFileAttributes.class);
             FileTime modifiedTime = attr.lastModifiedTime();
             SimpleDateFormat dateFormat;
             dateFormat = new SimpleDateFormat("yyyy-MM-dd");
             String dateStr = dateFormat.format(new Date(modifiedTime.toMillis()));
 
-            File f = new File(directorypath + "/" + dateStr);
+            File f = new File(directoryPath + "/" + dateStr);
 
-            cp(path, f.toString());
+            cp(filePath, f.toString());
         } catch (Exception e) {
             System.out.println("Something went wrong: " + e);
         }
     }
 
     static void cp(String source, String target) {
-        Path sourcedir = Paths.get(source);
-        Path targetdir = Paths.get(target);
+        Path sourceDir = Paths.get(source);
+        Path targetDir = Paths.get(target);
         try {
-            Files.createDirectories(targetdir);
-            Files.copy(sourcedir, targetdir.resolve(sourcedir.getFileName()), StandardCopyOption.REPLACE_EXISTING);
-            System.out.println(source + " moved to " + target);
+            Files.createDirectories(targetDir);
+            Files.copy(sourceDir, targetDir.resolve(sourceDir.getFileName()), StandardCopyOption.REPLACE_EXISTING);
+            System.out.println(source + " copied to " + target);
         } catch (Exception e) {
             System.out.println("Something went wrong: " + e);
         }
