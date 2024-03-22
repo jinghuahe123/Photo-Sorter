@@ -32,10 +32,6 @@ public class Main {
             System.exit(0);
         }
 
-        //System.out.print("Source: ");
-        //String directoryPath = scanner.nextLine();
-        //System.out.println();
-
         Path directory = Paths.get(path);
 
         try {
